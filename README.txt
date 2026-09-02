@@ -1,0 +1,1 @@
+Reference-driven phone-first PWA simulation. Upload the contents of this folder to the GitHub Pages repository root. Simulation only; no real credentials or broker connectivity.
