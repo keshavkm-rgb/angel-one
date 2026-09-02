@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+<head>
+  <link rel="icon" type="image/png" sizes="32x32" href="angelone-tab-icon-v2.png">
+  <link rel="shortcut icon" type="image/x-icon" href="angelone-tab-icon-v2.ico">
+  <meta charset="utf-8">
+<title>Angel One - Profit & Loss</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;background:#0b0b0b;color:#fff;font-family:Arial,Helvetica,sans-serif}
+.page{max-width:1536px;margin:auto;padding:18px 26px 40px}
+.top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #222;padding-bottom:14px}
+h1{font-size:18px;margin:0}
+.card{margin-top:24px;border:1px solid #252932;border-radius:8px;background:#101010}
+.head,.row{display:grid;grid-template-columns:1.6fr .7fr 1fr 1fr 1fr 1fr 1fr;gap:12px;align-items:center;padding:14px 16px}
+.head{font-size:11px;color:#9da4b5;border-bottom:1px solid #252932}
+.row{font-size:13px}
+.neg{color:#e34d59;font-weight:700}
+.pos{color:#2ac596;font-weight:700}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+.metric{border:1px solid #252932;border-radius:8px;padding:14px 16px;background:#101010}
+.metric .label{font-size:11px;color:#9da4b5;margin-bottom:8px}
+.metric .value{font-size:18px;font-weight:700}
+.notice{position:fixed;right:8px;bottom:8px;font:10px Arial;color:#aaa;background:rgba(15,15,15,.85);padding:3px 5px;border-radius:3px}
+a{color:#6f87ff;text-decoration:none}
+</style>
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./angelone-tab-icon-v2.png">
+<meta name="theme-color" content="#0f1115">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Angel One">
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <h1>Profit &amp; Loss</h1>
+    <a href="account.html">Back to Account</a>
+  </div>
+
+  <div class="summary">
+    <div class="metric"><div class="label">Invested</div><div class="value">₹2,53,000</div></div>
+    <div class="metric"><div class="label">Current Value</div><div class="value"><span id="pnlCurrent">₹2,59,438.40</span></div></div>
+    <div class="metric"><div class="label">Overall P&amp;L</div><div class="value neg"><span id="pnlOverall" style="color:#2ac596">₹ +6,438.40 (+2.54%)</span></div></div>
+    <div class="metric"><div class="label">Today's P&amp;L</div><div class="value pos"><span id="pnlToday" style="color:#ff4d5a">₹ -2,579.20 (-0.98%)</span></div></div>
+  </div>
+
+  <div class="card">
+    <div class="head">
+      <div>Stock</div><div>Qty</div><div>Avg. Price</div><div>Prev. Close</div><div>Today Close</div><div>Today's P&amp;L</div><div>Overall P&amp;L</div>
+    </div>
+    <div class="row">
+      <div><strong>HINDZINC</strong><br><span style="font-size:10px;color:#9da4b5">Hindustan Zinc Ltd · NSE</span></div>
+      <div>416</div>
+      <div>₹608.17</div>
+      <div>₹601.65</div>
+      <div>₹594.90</div>
+      <div class="pos">₹ 3,182.40<br><span style="font-size:10px">(+1.29%)</span></div>
+      <div class="neg">₹ -2,339.20<br><span style="font-size:10px">(-0.92%)</span></div>
+    </div>
+  </div>
+</div>
+<div class="notice">Simulation · No real credentials</div>
+
+<script>
+(function () {
+  function applyGainLossColors(root) {
+    root = root || document;
+    root.querySelectorAll('[data-pnl], [data-gain], .auto-gain-loss').forEach(function(el) {
+      var text = (el.textContent || '').replace(/,/g,'').trim();
+      var m = text.match(/[-+]?\s*₹?\s*(-?\d+(?:\.\d+)?)/);
+      var value = NaN;
+      if (m) {
+        var cleaned = text.replace(/[₹,\s]/g,'');
+        var n = cleaned.match(/[-+]?\d+(?:\.\d+)?/);
+        if (n) value = parseFloat(n[0]);
+      }
+      el.style.color = value < 0 ? '#ff4d5a' : value > 0 ? '#19c99a' : '';
+    });
+  }
+  window.applyGainLossColors = applyGainLossColors;
+  document.addEventListener('DOMContentLoaded', function(){ applyGainLossColors(); });
+  new MutationObserver(function(){ applyGainLossColors(); }).observe(document.documentElement, {
+    subtree:true, childList:true, characterData:true
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  const KEY='angelone_hindzinc_sim_v1';
+  const ANCHOR=588.00;
+  const PREV=593.20;
+  const QTY=416;
+  const INVESTED=253000.0;
+
+  function load(){
+    try {
+      const x=JSON.parse(localStorage.getItem(KEY)||'null');
+      if(x && typeof x.price==='number' && Date.now()-x.ts<120000) return x;
+    } catch(e){}
+    return {price:ANCHOR,ts:Date.now()};
+  }
+  function save(price){
+    try{localStorage.setItem(KEY,JSON.stringify({price:price,ts:Date.now()}));}catch(e){}
+  }
+  window.AngelSim={
+    KEY,ANCHOR,PREV,QTY,INVESTED,
+    load,save,
+    money:function(n){
+      return '₹'+n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+    },
+    signedMoney:function(n){
+      return (n<0?'₹ -':'₹ +')+Math.abs(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+    },
+    calc:function(px){
+      const current=QTY*px;
+      const today=QTY*(px-PREV);
+      const todayPct=(px-PREV)/PREV*100;
+      const overall=current-INVESTED;
+      const overallPct=overall/INVESTED*100;
+      return {current,today,todayPct,overall,overallPct};
+    },
+    color:function(el,v){
+      if(!el)return;
+      el.style.color=v<0?'#ff4d5a':v>0?'#19c99a':'';
+    }
+  };
+})();
+</script>
+
+
+<script>
+(function(){
+  function render(px){
+    const c=AngelSim.calc(px);
+    const a=document.getElementById('pnlCurrent');if(a)a.textContent=AngelSim.money(c.current);
+    const b=document.getElementById('pnlOverall');if(b){b.textContent=AngelSim.signedMoney(c.overall)+' ('+(c.overallPct>=0?'+':'')+c.overallPct.toFixed(2)+'%)';AngelSim.color(b,c.overall);}
+    const d=document.getElementById('pnlToday');if(d){d.textContent=AngelSim.signedMoney(c.today)+' ('+(c.todayPct>=0?'+':'')+c.todayPct.toFixed(2)+'%)';AngelSim.color(d,c.today);}
+  }
+  render(AngelSim.load().price);
+  setInterval(function(){ render(AngelSim.load().price); },900);
+})();
+</script>
+
+
+
+
+<script>if('serviceWorker' in navigator&&location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));</script>
+</body>
+</html>
