@@ -1,1 +1,3 @@
-Reference-driven phone-first PWA simulation. Upload the contents of this folder to the GitHub Pages repository root. Simulation only; no real credentials or broker connectivity.
+Angel One mobile PWA simulation — polished mobile build.
+₹588.40 EOD state preserved. Bottom navigation uses consistent inline SVG icons and page-aware active highlighting.
+Simulation only; no real credentials or broker connectivity.
