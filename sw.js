@@ -1,4 +1,0 @@
-const CACHE='angel-one-sim-58800-v1';const ASSETS=["./", "./account.html", "./hindzinc.html", "./home.html", "./index.html", "./login.html", "./markets.html", "./orders.html", "./otp.html", "./pin.html", "./pnl.html", "./portfolio.html", "./positions.html", "./tradeone.html", "./transactions.html", "./withdrawn.html", "./manifest.json", "./angelone-tab-icon-v2.png", "./angelone-favicon.png"];
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(x=>{let y=x.clone();caches.open(CACHE).then(c=>c.put(e.request,y));return x;}).catch(()=>caches.match('./index.html'))));});
