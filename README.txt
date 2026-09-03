@@ -1,3 +1,1 @@
-Angel One mobile PWA simulation — polished mobile build.
-₹588.40 EOD state preserved. Bottom navigation uses consistent inline SVG icons and page-aware active highlighting.
-Simulation only; no real credentials or broker connectivity.
+₹593.75 live simulated state. Open reference ₹591.80; previous close ₹588.25. HINDZINC cycles between ₹593.15 and ₹594.15. Simulation only; no real credentials.
